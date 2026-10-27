@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Est-ce que la RQTH pourrait me concerner ?</title>
+<style>
+  :root{
+    --bg: #EEF2EF;
+    --surface: #FFFFFF;
+    --ink: #1E2B27;
+    --ink-soft: #4B5A55;
+    --line: #D6DED9;
+    --teal: #3F6459;
+    --teal-deep: #2C4A41;
+    --ochre: #B0723C;
+    --ochre-soft: #F1E3D3;
+    --good: #4B7A5A;
+    --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+    --sans: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.55;
+    min-height:100vh;display:flex;justify-content:center;padding:32px 18px 60px;
+  }
+  .app{width:100%;max-width:600px;}
+  header.top{margin-bottom:28px;}
+  .privacy-badge{
+    display:inline-flex;align-items:center;gap:8px;background:var(--ochre-soft);color:var(--teal-deep);
+    border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;margin-bottom:18px;
+  }
+  .privacy-badge svg{flex-shrink:0;}
+  h1{font-family:var(--serif);font-size:29px;font-weight:600;line-height:1.28;margin:0 0 10px;color:var(--teal-deep);}
+  .lede{color:var(--ink-soft);font-size:16px;max-width:52ch;margin:0;}
+  .progress-track{height:4px;background:var(--line);border-radius:99px;margin:26px 0 28px;overflow:hidden;}
+  .progress-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .3s ease;width:0%;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:28px 26px;}
+  .step-label{font-size:13px;color:var(--ink-soft);margin-bottom:6px;}
+  .question{font-family:var(--serif);font-size:20px;line-height:1.4;color:var(--ink);margin:0 0 6px;}
+  .question-help{font-size:13.5px;color:var(--ink-soft);margin:0 0 18px;}
+  .options{display:flex;flex-direction:column;gap:9px;}
+  .option{
+    display:flex;align-items:flex-start;gap:12px;padding:13px 15px;
+    border:1.5px solid var(--line);border-radius:10px;cursor:pointer;
+    background:var(--surface);transition:border-color .15s ease, background .15s ease;
+  }
+  .option:hover{border-color:var(--teal);}
+  .option input{margin-top:3px;accent-color:var(--teal);width:17px;height:17px;flex-shrink:0;}
+  .option.checked{border-color:var(--teal);background:#F2F6F4;}
+  .option-text{font-size:15px;}
+  .option-sub{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:2px;}
+  .option-section{
+    font-size:11.5px;font-weight:700;letter-spacing:.02em;color:var(--teal);
+    margin:14px 0 2px;
+  }
+  .option-section:first-child{margin-top:0;}
+  .option.nested{margin-left:16px;padding:11px 14px;}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;}
+  button{font-family:var(--sans);font-size:15px;font-weight:600;border-radius:9px;padding:12px 22px;border:none;cursor:pointer;}
+  .btn-primary{background:var(--teal-deep);color:#fff;}
+  .btn-primary:disabled{background:#B7C4BF;cursor:not-allowed;}
+  .btn-ghost{background:transparent;color:var(--ink-soft);padding:12px 8px;}
+  .btn-ghost:hover{color:var(--ink);}
+  .intro-actions{margin-top:22px;}
+  .intro-list{margin:16px 0;padding-left:18px;font-size:14px;color:var(--ink-soft);}
+  .intro-list li{margin-bottom:5px;}
+  .result-icon{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:18px;}
+  .result-title{font-family:var(--serif);font-size:23px;margin:0 0 12px;color:var(--teal-deep);}
+  .result-body p{margin:0 0 14px;font-size:15px;color:var(--ink);}
+  .result-next{background:#F4F7F5;border-left:3px solid var(--teal);border-radius:0 8px 8px 0;padding:16px 18px;margin-top:18px;}
+  .result-next h3{font-size:14px;margin:0 0 8px;color:var(--teal-deep);}
+  .result-next ul{margin:0;padding-left:18px;font-size:14px;color:var(--ink-soft);}
+  .result-next li{margin-bottom:5px;}
+  .resources{background:var(--ochre-soft);border-radius:10px;padding:18px 20px;margin-top:18px;}
+  .resources h3{font-size:14px;margin:0 0 12px;color:var(--ochre);}
+  .resource-item{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start;}
+  .resource-item:last-child{margin-bottom:0;}
+  .resource-dot{width:7px;height:7px;border-radius:50%;background:var(--ochre);margin-top:7px;flex-shrink:0;}
+  .resource-name{font-weight:700;font-size:14px;color:var(--ink);}
+  .resource-role{font-size:13px;color:var(--ink-soft);}
+  .recap{font-size:12.5px;color:var(--ink-soft);margin-top:16px;font-style:italic;}
+  .disclaimer{font-size:12.5px;color:var(--ink-soft);margin-top:22px;padding-top:16px;border-top:1px solid var(--line);}
+  .restart{margin-top:20px;}
+  .hidden{display:none;}
+  @media (max-width:480px){
+    .card{padding:22px 18px;}
+    h1{font-size:24px;}
+    .question{font-size:18px;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <div class="privacy-badge">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l8 3.5v6c0 5-3.4 8.6-8 10.5-4.6-1.9-8-5.5-8-10.5v-6L12 2z"/></svg>
+      Rien n'est enregistré ni transmis
+    </div>
+    <h1>Est-ce que la RQTH pourrait me concerner ?</h1>
+    <p class="lede">Un auto-questionnaire personnel et détaillé, pour vous aider à y voir plus clair. Vos réponses restent uniquement dans votre navigateur : fermez l'onglet et il n'en reste aucune trace.</p>
+  </header>
+
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="card" id="screen-intro">
+    <p class="question" style="font-size:17px;">Avant de commencer</p>
+    <p class="question-help" style="margin-bottom:0;">
+      La RQTH (Reconnaissance de la Qualité de Travailleur Handicapé) peut concerner toute personne dont un problème de santé durable a un impact sur son travail — quelle que soit sa forme : physique, sensorielle, psychique, cognitive, ou une maladie chronique. Ce n'est ni automatique, ni définitif, ni public : vous seul(e) décidez d'en parler ou d'entamer une démarche.
+    </p>
+    <ul class="intro-list">
+      <li>Jusqu'à 19 questions précises, environ 5 minutes — certaines s'affichent seulement si elles vous concernent</li>
+      <li>Vous pouvez revenir en arrière à tout moment</li>
+      <li>Aucun diagnostic n'est posé : ce test donne une indication, pas une décision</li>
+    </ul>
+    <div class="intro-actions">
+      <button class="btn-primary" onclick="startQuiz()">Commencer le test</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="screen-quiz">
+    <p class="step-label" id="stepLabel"></p>
+    <p class="question" id="questionText"></p>
+    <p class="question-help" id="questionHelp"></p>
+    <div class="options" id="optionsContainer"></div>
+    <div class="nav">
+      <button class="btn-ghost" id="backBtn" onclick="goBack()">← Précédent</button>
+      <button class="btn-primary" id="nextBtn" onclick="goNext()" disabled>Suivant</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="screen-result">
+    <div id="resultContent"></div>
+    <div class="restart">
+      <button class="btn-ghost" onclick="restart()">↺ Recommencer le test</button>
+    </div>
+  </div>
+
+  <p class="disclaimer">
+    Cet outil a une visée purement informative et personnelle. Il ne remplace ni un avis médical, ni une décision de la Maison Départementale des Personnes Handicapées (MDPH), seule habilitée à attribuer la RQTH. Aucune donnée saisie ici n'est collectée, sauvegardée ou transmise à qui que ce soit, y compris à votre employeur.
+  </p>
+
+</div>
+
+<script>
+const RESOURCES = [
+  {name:"Damien Caillaud", role:"Conseiller externe handicap — un regard extérieur, confidentiel et sans lien hiérarchique, pour vous accompagner dans vos démarches."},
+  {name:"Marie-Hélène Malojo", role:"Responsable Santé Sécurité et Handicap au travail — la référente interne pour toute question liée au handicap ou à la santé au travail."},
+  {name:"La communauté des allié·e·s", role:"Des collègues sensibilisés et formés, disponibles pour échanger, écouter et orienter."},
+  {name:"Les assistantes sociales", role:"Un accompagnement social et administratif, y compris sur la constitution d'un dossier RQTH ou MDPH."}
+];
+
+const TYPOLOGY_LABELS = {
+  moteur:"handicap moteur", visuel:"handicap visuel", auditif:"handicap auditif",
+  psychique:"handicap psychique", mental:"handicap mental", cognitif:"handicap cognitif",
+  maladie:"maladie invalidante", sante_autre:"un problème de santé non catégorisé ci-dessus",
+  douleurs:"des douleurs liées à la santé", fatigue_travail:"de la fatigue au travail liée à la santé"
+};
+
+const PAIN_LABELS = {
+  dos:"dos / colonne vertébrale", articulations:"articulations / muscles",
+  tete:"tête / migraines", diffuses:"douleurs diffuses (type fibromyalgie)", autres:"autres localisations"
+};
+
+const questions = [
+  {
+    key: "typologie",
+    type: "multi",
+    text: "Une ou plusieurs de ces situations vous concernent-elles ?",
+    help: "Cochez tout ce qui s'applique. Ces catégories sont des repères : un même problème de santé peut relever de plusieurs d'entre elles à la fois, et il est courant de cocher plusieurs cases.",
+    options: [
+      {v:"moteur", label:"Handicap moteur", sub:"Difficultés de mobilité, de déplacement, de préhension liées à une atteinte physique", sectionLabel:"Typologies de handicap"},
+      {v:"visuel", label:"Handicap visuel", sub:"Basse vision ou cécité, partielle ou totale"},
+      {v:"auditif", label:"Handicap auditif", sub:"Surdité ou déficience auditive, partielle ou totale"},
+      {v:"psychique", label:"Handicap psychique", sub:"Troubles pouvant évoluer par crises : anxiété, dépression, troubles bipolaires, etc."},
+      {v:"mental", label:"Handicap mental", sub:"Déficience intellectuelle affectant la compréhension ou la prise de décision"},
+      {v:"cognitif", label:"Handicap cognitif", sub:"Troubles \"dys\", TDAH, troubles du spectre de l'autisme, troubles de la mémoire ou de l'attention"},
+      {v:"maladie", label:"Maladie invalidante", sub:"Maladie chronique ou évolutive : diabète, cancer, maladie cardio-vasculaire, sclérose en plaques, etc."},
+      {v:"sante_autre", label:"J'ai des problèmes de santé", sub:"Une situation qui ne correspond à aucune des catégories ci-dessus", sectionLabel:"Autres signaux à prendre en compte"},
+      {v:"douleurs", label:"J'ai des douleurs liées à ma santé", sub:"Vous pourrez préciser où elles se situent à la question suivante"},
+      {v:"fatigue_travail", label:"J'éprouve de la fatigue au travail liée à ma santé", sub:""},
+      {v:"aucune", label:"Aucune de ces situations ne me concerne", sub:"", exclusive:true, sectionLabel:" "}
+    ]
+  },
+  {
+    key: "douleurLocalisation",
+    type: "multi",
+    text: "Où se situent principalement vos douleurs ?",
+    help: "Vous pouvez cocher plusieurs zones.",
+    skipIf: (a) => !(a.typologie && a.typologie.includes('douleurs')),
+    options: [
+      {v:"dos", label:"Dos / colonne vertébrale"},
+      {v:"articulations", label:"Articulations / muscles"},
+      {v:"tete", label:"Tête / migraines"},
+      {v:"diffuses", label:"Douleurs diffuses (type fibromyalgie)"},
+      {v:"autres", label:"Autres localisations"}
+    ]
+  },
+  {
+    key: "anciennete",
+    type: "single",
+    text: "Depuis combien de temps constatez-vous cette situation de santé ?",
+    help: "",
+    options: [
+      {v:2, label:"Plus d'un an"},
+      {v:1, label:"Entre 6 mois et 1 an"},
+      {v:0, label:"Moins de 6 mois"}
+    ]
+  },
+  {
+    key: "evolution",
+    type: "single",
+    text: "Diriez-vous que cette situation est plutôt :",
+    help: "",
+    options: [
+      {v:2, label:"Stable ou durable"},
+      {v:2, label:"Évolutive, avec des crises ou poussées possibles"},
+      {v:0, label:"Temporaire, en voie d'amélioration"}
+    ]
+  },
+  {
+    key: "diagnostic",
+    type: "single",
+    text: "Un diagnostic médical a-t-il été posé pour cette situation ?",
+    help: "",
+    options: [
+      {v:2, label:"Oui, posé et confirmé"},
+      {v:1, label:"En cours d'évaluation"},
+      {v:0, label:"Pas encore de diagnostic"}
+    ]
+  },
+  {
+    key: "suivi",
+    type: "single",
+    text: "Bénéficiez-vous d'un suivi médical régulier pour cette situation ?",
+    help: "Médecin traitant, spécialiste, psychiatre, kinésithérapeute, etc.",
+    options: [
+      {v:2, label:"Oui, un suivi régulier"},
+      {v:1, label:"Un suivi ponctuel ou occasionnel"},
+      {v:0, label:"Aucun suivi actuellement"}
+    ]
+  },
+  {
+    key: "traitement",
+    type: "single",
+    text: "Suivez-vous un traitement pour cette situation ?",
+    help: "Médicamenteux, rééducation, psychothérapie, appareillage...",
+    options: [
+      {v:2, label:"Oui, de façon régulière"},
+      {v:1, label:"Oui, mais occasionnellement"},
+      {v:0, label:"Non, aucun traitement"}
+    ]
+  },
+  {
+    key: "arrets",
+    type: "single",
+    text: "Au cours des 12 derniers mois, avez-vous eu des arrêts de travail liés à cette situation ?",
+    help: "",
+    options: [
+      {v:2, label:"Oui, plusieurs arrêts"},
+      {v:1, label:"Oui, un seul arrêt"},
+      {v:0, label:"Non, aucun"}
+    ]
+  },
+  {
+    key: "dureeArrets",
+    type: "single",
+    text: "Quelle a été la durée cumulée approximative de ces arrêts ?",
+    help: "",
+    skipIf: (a) => a.arrets === 0,
+    options: [
+      {v:2, label:"Plus d'un mois au total"},
+      {v:1, label:"Quelques semaines"},
+      {v:0, label:"Quelques jours seulement"}
+    ]
+  },
+  {
+    key: "physique",
+    type: "single",
+    text: "Cette situation complique-t-elle des tâches physiques ?",
+    help: "Porter des charges, rester debout ou assis longtemps, se déplacer, gestes répétitifs...",
+    options: [
+      {v:2, label:"Oui, régulièrement"},
+      {v:1, label:"Parfois"},
+      {v:0, label:"Non"}
+    ]
+  },
+  {
+    key: "cognitifImpact",
+    type: "single",
+    text: "Complique-t-elle votre concentration, votre mémoire, ou la gestion de plusieurs tâches à la fois ?",
+    help: "",
+    options: [
+      {v:2, label:"Oui, régulièrement"},
+      {v:1, label:"Parfois"},
+      {v:0, label:"Non"}
+    ]
+  },
+  {
+    key: "communication",
+    type: "single",
+    text: "Complique-t-elle vos échanges avec vos collègues, votre hiérarchie ou des clients ?",
+    help: "",
+    options: [
+      {v:2, label:"Oui, régulièrement"},
+      {v:1, label:"Parfois"},
+      {v:0, label:"Non"}
+    ]
+  },
+  {
+    key: "fatigue",
+    type: "single",
+    text: "Cette fatigue liée à votre santé revient-elle au quotidien, ou seulement de temps en temps ?",
+    help: "",
+    skipIf: (a) => !(a.typologie && a.typologie.includes('fatigue_travail')),
+    options: [
+      {v:2, label:"Presque tous les jours"},
+      {v:1, label:"Quelques fois par semaine"},
+      {v:0, label:"Rarement"}
+    ]
+  },
+  {
+    key: "douleurFreq",
+    type: "single",
+    text: "Ces douleurs sont-elles plutôt quotidiennes, fréquentes, ou occasionnelles ?",
+    help: "",
+    skipIf: (a) => !(a.typologie && a.typologie.includes('douleurs')),
+    options: [
+      {v:2, label:"Quotidiennes"},
+      {v:1, label:"Fréquentes, sans être quotidiennes"},
+      {v:0, label:"Occasionnelles"}
+    ]
+  },
+  {
+    key: "amenagementActuel",
+    type: "single",
+    text: "Disposez-vous déjà d'aménagements liés à cette situation ?",
+    help: "Poste de travail, horaires, télétravail médical, matériel spécifique, aide humaine...",
+    options: [
+      {v:2, label:"Oui, j'en ai déjà"},
+      {v:1, label:"J'y ai pensé sans en demander"},
+      {v:0, label:"Non, je n'en ai pas besoin"}
+    ]
+  },
+  {
+    key: "amenagementBesoin",
+    type: "single",
+    text: "Pensez-vous avoir besoin d'aménagements que vous n'avez pas encore demandés ?",
+    help: "",
+    options: [
+      {v:2, label:"Oui, clairement"},
+      {v:1, label:"Peut-être"},
+      {v:0, label:"Non"}
+    ]
+  },
+  {
+    key: "vieQuotidienne",
+    type: "single",
+    text: "Cette situation a-t-elle un impact sur votre vie en dehors du travail ?",
+    help: "Déplacements, autonomie, activités du quotidien...",
+    options: [
+      {v:2, label:"Oui, régulièrement"},
+      {v:1, label:"Un peu"},
+      {v:0, label:"Non"}
+    ]
+  },
+  {
+    key: "avisMedecine",
+    type: "single",
+    text: "La médecine du travail a-t-elle déjà émis un avis vous concernant ?",
+    help: "",
+    options: [
+      {v:3, label:"Un avis d'inaptitude"},
+      {v:2, label:"Une aptitude avec réserves ou aménagements"},
+      {v:0, label:"Aucun avis particulier, ou pas encore consulté"}
+    ]
+  },
+  {
+    key: "reconnaissance",
+    type: "single",
+    text: "Avez-vous déjà une reconnaissance administrative liée à votre santé ?",
+    help: "Pension d'invalidité, taux d'incapacité MDPH, carte mobilité inclusion, rente accident du travail / maladie professionnelle...",
+    options: [
+      {v:5, label:"Oui, j'ai déjà l'un de ces éléments"},
+      {v:0, label:"Non, ou je ne sais pas"}
+    ]
+  }
+];
+
+let pos = 0;
+let answers = {};
+
+function getVisibleIndices(){
+  const visible = [];
+  for(let i=0;i<questions.length;i++){
+    const q = questions[i];
+    if(q.skipIf && q.skipIf(answers)) continue;
+    visible.push(i);
+  }
+  return visible;
+}
+
+function startQuiz(){
+  document.getElementById('screen-intro').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  pos = 0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const visible = getVisibleIndices();
+  if(pos >= visible.length){ showResult(); return; }
+  const qIndex = visible[pos];
+  const q = questions[qIndex];
+
+  document.getElementById('stepLabel').textContent = `Question ${pos+1} / ${visible.length}`;
+  document.getElementById('questionText').textContent = q.text;
+  document.getElementById('questionHelp').textContent = q.help;
+  document.getElementById('progressFill').style.width = `${(pos/visible.length)*100}%`;
+
+  const container = document.getElementById('optionsContainer');
+  container.innerHTML = '';
+
+  if(q.type === 'multi'){
+    const selected = answers[q.key] || [];
+    q.options.forEach((opt, i) => {
+      if(opt.sectionLabel && opt.sectionLabel.trim()){
+        const header = document.createElement('div');
+        header.className = 'option-section';
+        header.textContent = opt.sectionLabel;
+        container.appendChild(header);
+      }
+      const id = `opt-${qIndex}-${i}`;
+      const label = document.createElement('label');
+      label.className = 'option';
+      label.setAttribute('for', id);
+      const isChecked = selected.includes(opt.v);
+      if(isChecked) label.classList.add('checked');
+      label.innerHTML = `<input type="checkbox" id="${id}" value="${opt.v}" ${isChecked ? 'checked':''}>
+        <span class="option-text">${opt.label}${opt.sub ? `<span class="option-sub">${opt.sub}</span>`:''}</span>`;
+      label.addEventListener('click', (e) => { e.preventDefault(); toggleMulti(q.key, opt.v, opt.exclusive, q.options); });
+      container.appendChild(label);
+    });
+    document.getElementById('nextBtn').disabled = !(answers[q.key] && answers[q.key].length > 0);
+  } else {
+    q.options.forEach((opt, i) => {
+      const id = `opt-${qIndex}-${i}`;
+      const label = document.createElement('label');
+      label.className = 'option';
+      label.setAttribute('for', id);
+      if(answers[q.key] === opt.v) label.classList.add('checked');
+      label.innerHTML = `<input type="radio" id="${id}" name="q${qIndex}" value="${opt.v}" ${answers[q.key]===opt.v ? 'checked':''}>
+        <span class="option-text">${opt.label}</span>`;
+      label.addEventListener('click', () => selectSingle(q.key, opt.v));
+      container.appendChild(label);
+    });
+    document.getElementById('nextBtn').disabled = !(q.key in answers);
+  }
+
+  document.getElementById('backBtn').style.visibility = pos === 0 ? 'hidden' : 'visible';
+  document.getElementById('nextBtn').textContent = pos === visible.length - 1 ? 'Voir mon résultat' : 'Suivant';
+}
+
+function toggleMulti(key, value, exclusive, allOptions){
+  let selected = answers[key] || [];
+  if(exclusive){
+    selected = selected.includes(value) ? [] : [value];
+  } else {
+    const exclusiveValues = allOptions.filter(o => o.exclusive).map(o => o.v);
+    selected = selected.filter(v => !exclusiveValues.includes(v));
+    selected = selected.includes(value) ? selected.filter(v => v !== value) : [...selected, value];
+  }
+  answers[key] = selected;
+  renderQuestion();
+}
+
+function selectSingle(key, value){
+  answers[key] = value;
+  renderQuestion();
+}
+
+function goNext(){
+  const visible = getVisibleIndices();
+  if(pos === visible.length - 1){
+    showResult();
+  } else {
+    pos++;
+    renderQuestion();
+  }
+}
+
+function goBack(){
+  if(pos > 0){
+    pos--;
+    renderQuestion();
+  }
+}
+
+function renderResources(){
+  return `
+    <div class="resources">
+      <h3>Des personnes pour en parler, en toute confidentialité</h3>
+      ${RESOURCES.map(r => `
+        <div class="resource-item">
+          <div class="resource-dot"></div>
+          <div>
+            <div class="resource-name">${r.name}</div>
+            <div class="resource-role">${r.role}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderRecap(){
+  const typologies = (answers['typologie'] || []).filter(t => t !== 'aucune').map(t => TYPOLOGY_LABELS[t]);
+  if(typologies.length === 0) return '';
+  let text = `Situations que vous avez identifiées : ${typologies.join(', ')}.`;
+  const painZones = (answers['douleurLocalisation'] || []).map(p => PAIN_LABELS[p]);
+  if(painZones.length > 0){
+    text += ` Douleurs situées principalement : ${painZones.join(', ')}.`;
+  }
+  return `<p class="recap">${text}</p>`;
+}
+
+function showResult(){
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('progressFill').style.width = '100%';
+  document.getElementById('screen-result').classList.remove('hidden');
+
+  const scoreKeys = ['anciennete','evolution','diagnostic','suivi','traitement','arrets','dureeArrets',
+    'physique','cognitifImpact','communication','fatigue','douleurFreq','amenagementActuel','amenagementBesoin',
+    'vieQuotidienne','avisMedecine'];
+  const total = scoreKeys.reduce((sum, k) => sum + (answers[k] || 0), 0);
+  const hasRecognition = answers['reconnaissance'] === 5;
+  const typologies = answers['typologie'] || [];
+  const noTypology = typologies.includes('aucune') || typologies.length === 0;
+
+  let html = '';
+
+  if(hasRecognition){
+    html = `
+      <div class="result-icon" style="background:#E4EFE8;color:var(--good);">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
+      <p class="result-title">Vous êtes probablement déjà éligible</p>
+      <div class="result-body">
+        <p>Vous avez indiqué disposer déjà d'une reconnaissance administrative (invalidité, rente AT/MP, carte mobilité inclusion, ou taux d'incapacité). Dans la plupart de ces situations, la RQTH peut être obtenue directement ou via une démarche simplifiée auprès de la MDPH.</p>
+      </div>
+      <div class="result-next">
+        <h3>Pistes concrètes</h3>
+        <ul>
+          <li>Vérifiez auprès de la MDPH si votre situation ouvre droit à la RQTH de plein droit</li>
+          <li>Vous pouvez en parler en toute confidentialité au médecin du travail</li>
+        </ul>
+      </div>
+      ${renderResources()}
+      ${renderRecap()}`;
+  } else if(noTypology){
+    html = `
+      <div class="result-icon" style="background:#EEF2EF;color:var(--ink-soft);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <p class="result-title">La RQTH ne semble pas concerner votre situation actuelle</p>
+      <div class="result-body">
+        <p>D'après vos réponses, vous n'avez pas signalé de situation de santé durable impactant votre travail aujourd'hui. Cela peut bien sûr évoluer : vous pourrez refaire ce test à tout moment.</p>
+      </div>
+      ${renderResources()}`;
+  } else if(total >= 20){
+    html = `
+      <div class="result-icon" style="background:var(--ochre-soft);color:var(--ochre);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <p class="result-title">Cela mérite une vraie démarche</p>
+      <div class="result-body">
+        <p>Vos réponses dessinent une situation durable, avec un impact réel sur votre travail et votre quotidien, et déjà suivie médicalement. Une demande de RQTH aurait probablement du sens à examiner de près.</p>
+        <p>Seuls un médecin et la MDPH peuvent confirmer une éligibilité — ce résultat reste une invitation à approfondir, à votre rythme.</p>
+      </div>
+      <div class="result-next">
+        <h3>Pistes concrètes</h3>
+        <ul>
+          <li>Parlez-en à votre médecin traitant : il peut évaluer si une demande a du sens et vous aider à constituer le dossier médical</li>
+          <li>Le médecin du travail peut aussi vous orienter, en toute confidentialité</li>
+          <li>La démarche se fait directement auprès de la MDPH de votre département (formulaire Cerfa + certificat médical)</li>
+        </ul>
+      </div>
+      ${renderResources()}
+      ${renderRecap()}`;
+  } else if(total >= 10){
+    html = `
+      <div class="result-icon" style="background:#F2F6F4;color:var(--teal);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <p class="result-title">Cela mérite d'être exploré</p>
+      <div class="result-body">
+        <p>Certains éléments de votre situation rejoignent les critères souvent retenus pour la RQTH, sans que ce soit systématique. Cela vaut la peine d'en parler avec un professionnel de santé pour y voir plus clair.</p>
+      </div>
+      <div class="result-next">
+        <h3>Pistes concrètes</h3>
+        <ul>
+          <li>Évoquez le sujet avec votre médecin traitant lors d'une prochaine consultation</li>
+          <li>Le médecin du travail peut vous donner un avis éclairé, en toute confidentialité</li>
+        </ul>
+      </div>
+      ${renderResources()}
+      ${renderRecap()}`;
+  } else {
+    html = `
+      <div class="result-icon" style="background:#F2F6F4;color:var(--teal);">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 8v5M12 16h.01"/><circle cx="12" cy="12" r="9"/></svg>
+      </div>
+      <p class="result-title">Une situation à garder en tête, sans urgence</p>
+      <div class="result-body">
+        <p>Votre situation actuelle ne semble pas nécessiter de démarche RQTH dans l'immédiat, mais certains éléments méritent d'être gardés à l'esprit si votre état de santé ou son impact sur votre travail venait à évoluer.</p>
+      </div>
+      <div class="result-next">
+        <h3>Pistes concrètes</h3>
+        <ul>
+          <li>N'hésitez pas à refaire ce test si votre situation change</li>
+          <li>Votre médecin traitant reste le mieux placé pour vous conseiller</li>
+        </ul>
+      </div>
+      ${renderResources()}
+      ${renderRecap()}`;
+  }
+
+  document.getElementById('resultContent').innerHTML = html;
+}
+
+function restart(){
+  pos = 0;
+  answers = {};
+  document.getElementById('screen-result').classList.add('hidden');
+  document.getElementById('screen-intro').classList.remove('hidden');
+  document.getElementById('progressFill').style.width = '0%';
+}
+</script>
+
+</body>
+</html>
